@@ -34,13 +34,14 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube static code analysis...'
-                sh '''
-                    echo "SonarQube analysis stage"
-                    echo "Project Key: comp313-project"
-                    echo "Source: ."
-                    echo "Host URL: http://localhost:9000"
-                    echo "[MOCK] SonarQube analysis complete - connect SonarQube server for live results"
-                '''
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        npx sonar-scanner \
+                          -Dsonar.projectKey=comp313-project \
+                          -Dsonar.sources=. \
+                          -Dsonar.exclusions=node_modules/**,coverage/**,artifact/**
+                    '''
+                }
             }
         }
 
